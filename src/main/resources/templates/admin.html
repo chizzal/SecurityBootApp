@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            background-color: #121212;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .admin-container {
+            background-color: #1E1E1E;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .admin-container h2 {
+            color: #EAEAEA;
+            margin-bottom: 20px;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+        }
+
+        .user-table th {
+            background-color: #4A90E2;
+            color: #FFFFFF;
+            padding: 10px;
+        }
+
+        .user-table td {
+            padding: 10px;
+            border: 1px solid #555;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .lock-btn {
+            background-color: #FF4D4D;
+            color: #FFFFFF;
+        }
+
+        .lock-btn:hover {
+            background-color: #D43F3F;
+        }
+
+        .unlock-btn {
+            background-color: #00C853;
+            color: #FFFFFF;
+        }
+
+        .unlock-btn:hover {
+            background-color: #009624;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h2>Панель администратора</h2>
+
+    <table class="user-table">
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Роль</th>
+            <th>Статус</th>
+            <th>Действие</th>
+        </tr>
+        <tr th:each="person: ${people}">
+            <td th:text="${person.id}"></td>
+            <td th:text="${person.username}"></td>
+            <td th:if="${person.role == 'ROLE_ADMIN'}" th:text="ADMIN"></td>
+            <td th:if="${person.role == 'ROLE_USER'}" th:text="USER"></td>
+            <td th:text="${person.locked ? 'Заблокирован' : 'Активен'}"></td>
+            <td>
+                <form th:if="${!person.locked}" action="/admin/lock" method="post">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <input type="hidden" name="userId" th:value="${person.id}" />
+                    <button type="submit" class="action-btn lock-btn">Заблокировать</button>
+                </form>
+                <form th:if="${person.locked}" action="/admin/unlock" method="post">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    <input type="hidden" name="userId" th:value="${person.id}" />
+                    <button type="submit" class="action-btn unlock-btn">Разблокировать</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

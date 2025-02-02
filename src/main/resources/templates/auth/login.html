@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #1E1E1E;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #EAEAEA;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #CCCCCC;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #2A2A2A;
+            color: #FFFFFF;
+        }
+
+        .form-group input:focus {
+            border-color: #4A90E2;
+            outline: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4A90E2;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #5DADE2;
+        }
+
+        .error-message {
+            margin-top: 15px;
+            color: red;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Вход в систему</h2>
+    <form method="POST" action="/process_login">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <div class="form-group">
+            <label for="username">Имя пользователя</label>
+            <input type="text" name="username" id="username" placeholder="Введите имя пользователя" required/>
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <input type="password" name="password" id="password" placeholder="Введите пароль" required/>
+        </div>
+        <button type="submit" class="login-btn">Войти</button>
+        <div th:if="${errorCode != null}" th:switch="${errorCode}">
+            <div th:case="'locked'" class="error-message">
+                Пользователь заблокирован.
+            </div>
+            <div th:case="'bad_credentials'" class="error-message">
+                Неправильное имя или пароль.
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
